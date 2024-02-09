@@ -1,22 +1,23 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { formatDistanceToNow } from 'date-fns';
+import { ISOStringFormat, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { X } from 'lucide-react';
 import { ModalCard } from './modal-card';
  
 interface NodeCardProps {
     note: {
-        date: Date;
+        date: ISOStringFormat;
         content: string;
+        id: string;
     };
+    onNoteDeleted: (id: string) => void;
 }
 
-export function NoteCard({ note }: NodeCardProps) {
+export function NoteCard({ note, onNoteDeleted }: NodeCardProps) {
     return (
         <Dialog.Root>
             <Dialog.Trigger className='rounded-md flex flex-col text-left bg-slate-800 p-5 gap-3 outline-none overflow-hidden relative hover:ring-2 hover:ring-slate-600 focus-visible:ring-2 focus-visible:ring-lime-400'>
                 <span className='text-small font-medium text-slate-300'>
-                    {formatDistanceToNow(note.date.toISOString(), { locale: ptBR, addSuffix: true })}
+                    {formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}
                 </span>
                 <p className='leading-6 font-medium text-slate-400'>
                     {note.content}
@@ -27,7 +28,7 @@ export function NoteCard({ note }: NodeCardProps) {
             <ModalCard>
                 <div className='flex flex-1 flex-col gap-3 p-5'>
                     <span className='text-small font-medium text-slate-300'>
-                        {formatDistanceToNow(note.date.toISOString(), { locale: ptBR, addSuffix: true })}
+                        {formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}
                     </span>
                     <p className='leading-6 font-medium text-slate-400'>
                         {note.content}
@@ -36,6 +37,7 @@ export function NoteCard({ note }: NodeCardProps) {
                 <button
                     type='button'
                     className='bg-slate-800 py-4 text-sm w-full outline-none font-medium group'
+                    onClick={() => onNoteDeleted(note.id)}
                 >
                     Deseja <span className='text-red-400 hover:underline group-hover:underline'>apagar essa nota</span>?
                 </button>
